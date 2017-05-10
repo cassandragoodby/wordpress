@@ -23,12 +23,12 @@
 define('DB_NAME', 'cago6756db');
 
 /** MySQL database username */
-// define('DB_USER', 'cago6756');
-define('DB_USER', 'cago6756');
+
+define('DB_USER', 'root');
 
 /** MySQL database password */
-// define('DB_PASSWORD', 'fruity961!');
-define('DB_PASSWORD', 'fruity961!');
+
+define('DB_PASSWORD', 'root');
 
 /** MySQL hostname */
 define('DB_HOST', 'localhost');

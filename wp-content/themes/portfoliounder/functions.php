@@ -44,7 +44,7 @@ function portfoliounder_setup() {
 
 	// This theme uses wp_nav_menu() in one location.
 	register_nav_menus( array(
-		'menu-1' => esc_html__( 'Primary', 'portfoliounder' ),
+		'HeaderMenu' => esc_html__( 'HeaderMenu', 'portfoliounder' ),
 	) );
 
 	/*
@@ -70,6 +70,35 @@ function portfoliounder_setup() {
 }
 endif;
 add_action( 'after_setup_theme', 'portfoliounder_setup' );
+
+/**
+ * Register custom fonts.
+ */
+function portfoliounder_fonts_url() {
+	$fonts_url = '';
+
+	/**
+	 * Translators: If there are characters in your language that are not
+	 * supported by Libre Franklin, translate this to 'off'. Do not translate
+	 * into your own language.
+	 */
+	$libre_franklin = _x( 'on', 'Libre Franklin font: on or off', 'portfoliounder' );
+
+	if ( 'off' !== $libre_franklin ) {
+		$font_families = array();
+
+		$font_families[] = 'Libre Franklin:300,300i,400,400i,600,600i,800,800i';
+
+		$query_args = array(
+			'family' => urlencode( implode( '|', $font_families ) ),
+			'subset' => urlencode( 'latin,latin-ext' ),
+		);
+
+		$fonts_url = add_query_arg( $query_args, 'https://fonts.googleapis.com/css' );
+	}
+
+	return esc_url_raw( $fonts_url );
+}
 
 /**
  * Set the content width in pixels, based on the theme's design and stylesheet.
@@ -105,15 +134,22 @@ add_action( 'widgets_init', 'portfoliounder_widgets_init' );
  * Enqueue scripts and styles.
  */
 function portfoliounder_scripts() {
+	wp_enqueue_style('portfoliounder-fonts','https://fonts.googleapis.com/css?family=PT+Serif|Raleway');
+
 	wp_enqueue_style( 'portfoliounder-style', get_stylesheet_uri() );
 
-	wp_enqueue_script( 'portfoliounder-navigation', get_template_directory_uri() . '/js/navigation.js', array(), '20151215', true );
+	wp_enqueue_script( 'portfoliounder-navigation', get_template_directory_uri() . '/js/navigation.js', array('jquery'), '20151215', true );
+	wp_localize_script( 'portfoliounder-navigation', 'portfoliounderScreenReaderText', array(
+		'expand' => __( 'Expand child menu', 'portfoliounder'),
+		'collapse' => __( 'Collapse child menu', 'portfoliounder'),
+	));
 
 	wp_enqueue_script( 'portfoliounder-skip-link-focus-fix', get_template_directory_uri() . '/js/skip-link-focus-fix.js', array(), '20151215', true );
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
 	}
+	
 }
 add_action( 'wp_enqueue_scripts', 'portfoliounder_scripts' );
 
@@ -141,3 +177,14 @@ require get_template_directory() . '/inc/customizer.php';
  * Load Jetpack compatibility file.
  */
 require get_template_directory() . '/inc/jetpack.php';
+
+
+// CODE TO MAKE IMAGES LINKED
+add_filter( 'post_thumbnail_html', 'my_post_image_html', 10, 3 );
+ 
+function my_post_image_html( $html, $post_id, $post_image_id ) {
+ 
+  $html = '<a href="' . get_permalink( $post_id ) . '" title="' . esc_attr( get_the_title( $post_id ) ) . '">' . $html . '</a>';
+  return $html;
+ 
+}

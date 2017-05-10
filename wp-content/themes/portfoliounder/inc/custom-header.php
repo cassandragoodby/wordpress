@@ -19,9 +19,9 @@
 function portfoliounder_custom_header_setup() {
 	add_theme_support( 'custom-header', apply_filters( 'portfoliounder_custom_header_args', array(
 		'default-image'          => '',
-		'default-text-color'     => '000000',
-		'width'                  => 1000,
-		'height'                 => 250,
+		'default-text-color'     => 'fff',
+		'width'                  => 1919,
+		'height'                 => 1080,
 		'flex-height'            => true,
 		'wp-head-callback'       => 'portfoliounder_header_style',
 	) ) );
